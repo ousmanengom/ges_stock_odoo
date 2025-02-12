@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="product_template_only_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                    <field name="brand_id" widget="selection" domain="[('categ_id', '=', categ_id)]"/>
+                    <field name="modal_id" widget="selection"/>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="action_product_brand" model="ir.actions.act_window">
+            <field name="name">Marques</field>
+            <field name="res_model">product.brand</field>
+            <field name="view_mode">tree,form</field>
+     </record>
+
+    <menuitem id="menu_product_brand"
+              name="Marques"
+              parent="stock.menu_product_in_config_stock"
+              action="action_product_brand"/>
+
+     <record id="action_product_modal" model="ir.actions.act_window">
+            <field name="name">Modèles</field>
+            <field name="res_model">product.modal</field>
+            <field name="view_mode">tree,form</field>
+     </record>
+
+    <menuitem id="menu_product_modal"
+              name="Modèles"
+              parent="stock.menu_product_in_config_stock"
+              action="action_product_modal"/>
+
+    <record id="view_form_brand" model="ir.ui.view">
+            <field name="name">Formulaire marque</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="categ_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+
+    <record id="view_form_modal" model="ir.ui.view">
+            <field name="name">Formulaire modèle</field>
+            <field name="model">product.modal</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="brand_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+    </record>
+
+    <record id="view_stock_quant_tree_editable_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.tree.editable.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="after">
+                <field name="status"/>
+                <field name="employee_id"/>
+                <field name="year"/>
+                <field name="cartouche"/>
+                <field name="os"/>
+                <field name="description"/>
+                <field name="remark"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_stock_quant_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.tree.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="after">
+                <field name="status"/>
+                <field name="employee_id"/>
+                <field name="year"/>
+                <field name="cartouche"/>
+                <field name="os"/>
+                <field name="description"/>
+                <field name="remark"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_move_line_operation_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.move.line.operation_tree.inherit</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="employee_id"/>
+                <field name="year"/>
+                <field name="os_readonly" invisible="1"/>
+                <field name="os" attrs="{'readonly': [('os_readonly', '=', True)]}"/>
+                <field name="cartouche_readonly" invisible="1"/>
+                <field name="cartouche" attrs="{'readonly': [('cartouche_readonly', '=', True)]}"/>
+                <field name="description"/>
+                <field name="remark"/>
+                <field name="status"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
