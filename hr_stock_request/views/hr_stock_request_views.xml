@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_picking_type_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.type.form</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+
+            <field name="code" position="after">
+                <field name="is_desk"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="employee_id" />
+                <field name="type_is_desk" invisible='1'/>
+                <field name="location_domain" readonly='1' invisible='1'/>
+            </field>
+            <field name="location_dest_id" position="attributes">
+                <attribute name="attrs">{'invisible': [('picking_type_code', '=', 'outgoing'), ('type_is_desk', '=', False)]}</attribute>
+                <attribute name="domain">[('id', 'in', location_domain)]</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hr_employee_location_form" model="ir.ui.view">
+        <field name="name">hr.employee.location.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <field name="parent_id" position="after">
+                <field name="location_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_hr_stock_request_tree" model="ir.ui.view">
+        <field name="name">hr.stock.request.tree</field>
+        <field name="model">hr.stock.request</field>
+        <field name="arch" type="xml">
+            <tree string="Demandes de Matériel">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="date_request"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hr_stock_request_form" model="ir.ui.view">
+        <field name="name">hr.stock.request.form</field>
+        <field name="model">hr.stock.request</field>
+        <field name="arch" type="xml">
+            <form string="Demande de Matériel">
+                <header>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                    <button name="action_validate_department" type="object" string="Validation Chef de Département" states="draft" class="oe_highlight"/>
+                    <button name="action_validate_pole" type="object" string="Validation Chef de Pôle" states="dep_valid" class="oe_highlight"/>
+                    <button name="action_validate_dex" type="object" string="Validation Chef DEX" states="pole_valid" class="oe_highlight"/>
+                    <button name="action_validate_logistics" type="object" string="Validation Logistique" states="dex_valid" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Annuler" states="draft,dep_valid,pole_valid,dex_valid" class="btn btn-danger"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+
+                        <button type="object"
+                            name="action_view_picking"
+                            class="oe_stat_button"
+                            icon="fa-truck"  groups="stock.group_stock_user" attrs="{'invisible': [('picking_count', '=', 0)]}">
+                            <field name="picking_count" widget="statinfo" string="Attribution" />
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="user_id" string='Demandé par'/>
+                            <field name="date_request"/>
+                        </group>
+                        <group>
+                            <field name="employee_id" string='Demandeur'/>
+                            <field name="department_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Produits">
+                            <field name="request_line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hr_stock_request" model="ir.actions.act_window">
+        <field name="name">Demandes de Matériel</field>
+        <field name="res_model">hr.stock.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

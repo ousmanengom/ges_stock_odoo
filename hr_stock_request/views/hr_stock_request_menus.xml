@@ -1,0 +1,5 @@
+
+<odoo>
+    <menuitem id="menu_hr_stock_request_root" name="Demande de Matériel" sequence="10"/>
+    <menuitem id="menu_hr_stock_request" name="Demandes" parent="menu_hr_stock_request_root" sequence="20" action="action_hr_stock_request"/>
+</odoo>

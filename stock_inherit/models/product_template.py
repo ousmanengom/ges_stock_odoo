@@ -46,7 +46,8 @@ class StockMoveLine(models.Model):
     status = fields.Selection(
         [
             ('neuf', 'Neuf'),
-            ('perdu', 'Perdu'),
+            ('reconditionne', 'Reconditionné'),
+            ('seconde_main', 'Seconde Main'),
         ],
         string='Etat', )
     employee_id = fields.Many2one('hr.employee', string="Employé")
@@ -122,17 +123,16 @@ class StockMoveLine(models.Model):
 
 class StockMove(models.Model):
     _inherit = 'stock.move'
+
     def _action_done(self,**kwargs):
-
         res = super(StockMove, self)._action_done()
-
         for move in self:
             for move_line in move.move_line_ids:
                 quants = self.env['stock.quant'].search([
-                    ('product_id', '=', move_line.product_id.id),
-                    ('location_id', '=', move_line.location_dest_id.id),
+                    #('product_id', '=', move_line.product_id.id),
+                    #('location_id', '=', move_line.location_dest_id.id),
+                    ('lot_id', '=', move_line.lot_id.id),
                 ])
-
                 for quant in quants:
                     quant.sudo().write({
                         'move_line_id': move_line.id,
